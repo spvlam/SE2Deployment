@@ -14,6 +14,12 @@ const sequelize = new Sequelize(DATABASE_NAME, DATABASE_USER, DATABASE_PW, {
     host: DATABASE_HOST,
     port : DATABASE_PORT,
     dialect: DATABASE_DIALECT,
+    dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false // This is for self-signed certificates
+        }
+      }
 });
 
 // Sync the model with the database
