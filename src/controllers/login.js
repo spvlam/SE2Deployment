@@ -14,7 +14,7 @@ const helper = require('../utils/helper')
 
 const Users = require('../model/usersTable')
 const {LoginDevices,frontEndDirect} = require('../enum/login')
-
+const hostWebName = process.env.HOST_NAME_WEB
 
 class ControllerLogin {
   async register (req, res) {
@@ -26,10 +26,10 @@ class ControllerLogin {
           Users.findOne({ where: { email: email } })
             .then(user => {
               if (!user) {
-                let html = `<button> <a href="http://localhost:3000/login/noauth/verify?email=${email}&password=${hashPassword}&name=${username}">Click here comfirm your register</a></button>`
+                let html = `<button> <a href="${hostWebName}/login/noauth/verify?email=${email}&password=${hashPassword}&name=${username}">Click here comfirm your register</a></button>`
                 let message = {
-                  from: 'your-email@gmail.com',
-                  to: 'batdongsanvinhphuc12@gmail.com',
+                  from: 'LAMNV WEB',
+                  to: `${email}`,
                   subject: 'Comfirm Your Register',
                   html: html
                 }
@@ -57,7 +57,6 @@ class ControllerLogin {
   async verify (req, res) {
     try {
       let { email, password, name } = req.query
-      console.log(req.query)
       Users.create({ email, password, user_name: name })
         .then(() => {
           res.redirect(frontEndDirect.directREGISTERSUCCESS)
@@ -67,7 +66,6 @@ class ControllerLogin {
           res.status(500).json({ message: 'Internal server error' })
         })
     } catch (err) {
-      console.log(LoginDevices.directREGISTERSUCCESS, '123')
       res.status(500).json({ mes: err })
     }
   }
