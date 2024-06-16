@@ -75,6 +75,7 @@ class ControllerLogin {
       Users.findOne({ where: { email } })
         .then(user => {
           if (user) {
+            user_id = user.user_id
             bcrypt.compare(
               password,
               user.dataValues.password,
@@ -102,7 +103,8 @@ class ControllerLogin {
                       res.json({
                         name: user.user_name,
                         accessToken,
-                        refreshToken
+                        refreshToken,
+                        user_id
                       })
                     })
                     .catch(err => {
