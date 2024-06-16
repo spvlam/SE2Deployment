@@ -85,11 +85,11 @@ class ControllerLogin {
                 if (result && user.number_device < LoginDevices.numberDevices) {
                   let accessToken = jwtHelper.generateToken(
                     user,
-                    loginInfor.accessToken
+                    LoginDevices.accessToken
                   )
                   let refreshToken = jwtHelper.generateToken(
                     user,
-                    loginInfor.refreshToken
+                    LoginDevices.refreshToken
                   )
                   Users.update(
                     {
