@@ -75,7 +75,7 @@ class ControllerLogin {
       Users.findOne({ where: { email } })
         .then(user => {
           if (user) {
-            user_id = user.user_id
+            let user_id = user.user_id
             bcrypt.compare(
               password,
               user.dataValues.password,
