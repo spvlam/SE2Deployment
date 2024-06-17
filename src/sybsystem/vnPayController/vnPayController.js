@@ -81,6 +81,7 @@ class vnPayController {
     let signData = querystring.stringify(vnp_Params, { encode: false }); 
     let hmac = crypto.createHmac("sha512", secretKey);
     let signed = hmac.update( Buffer.from(signData, 'utf-8')).digest("hex");   
+    console.log(frontEndDirect.vnpayTransactionResult)
     if(secureHash === signed){
         //Kiem tra xem du lieu trong db co hop le hay khong va thong bao ket qua
         // res.json( {code: vnp_Params['vnp_ResponseCode']})
