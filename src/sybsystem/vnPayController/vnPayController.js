@@ -35,7 +35,7 @@ class vnPayController {
       }
       let currCode = 'VND'
       let vnp_Params = {}
-      date.setMinutes(date.getMinutes() + 15);
+      date.setMinutes(date.getMinutes() + 15000);
       let expireDate = dateFormat(date, 'yyyymmddHHmmss');
       vnp_Params['vnp_Version'] = vnp_Version
       vnp_Params['vnp_Command'] = vnp_Command
