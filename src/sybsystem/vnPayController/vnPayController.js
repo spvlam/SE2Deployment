@@ -2,7 +2,6 @@ var config = require('config')
 var querystring = require('qs')
 var crypto = require('crypto')
 let sortObject = require('./utils')
-const { Console } = require('console')
 const { frontEndDirect } = require('../../enum/login')
 
 let tmnCode = config.get('vnp_TmnCode')
@@ -64,7 +63,8 @@ class vnPayController {
       var signed = hmac.update( Buffer.from(signData, 'utf-8')).digest('hex')
       vnp_Params['vnp_SecureHash'] = signed
       vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: false })
-      res.redirect(vnpUrl)
+      console.log(console)
+      res.send(vnpUrl)
     } catch (error) {
         console.log(error)
       res.status(502).json('BAD GATE WAY : CAN NOT CONNECT TO VNPAY')
