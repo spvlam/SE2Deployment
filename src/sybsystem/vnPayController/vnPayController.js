@@ -64,7 +64,7 @@ class vnPayController {
       var signed = hmac.update( Buffer.from(signData, 'utf-8')).digest('hex')
       vnp_Params['vnp_SecureHash'] = signed
       vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: false })
-      res.send(vnpUrl)
+      res.redirect(vnpUrl)
     } catch (error) {
         console.log(error)
       res.status(502).json('BAD GATE WAY : CAN NOT CONNECT TO VNPAY')
