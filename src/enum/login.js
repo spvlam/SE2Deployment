@@ -4,9 +4,9 @@ class LoginDevices{
     static refreshToken = 1;
 } 
 class frontEndDirect{
-    static directREGISTERSUCCESS = "se-deploy-fr.vercel.app/";
-    static loginFacebookSuccess = "se-deploy-fr.vercel.app/success2authen"
-     static vnpayTransactionResult = "se-deploy-fr.vercel.app/vnpay"
+    static directREGISTERSUCCESS = "se-deploy-fr.vercel.app";
+    static loginFacebookSuccess = "https://se-deploy-fr.vercel.app/success2authen"
+     static vnpayTransactionResult = "https://se-deploy-fr.vercel.app/vnpay"
 }
 
 module.exports = {LoginDevices,frontEndDirect}
