@@ -7,7 +7,7 @@ const {appFB} = require('../../config/StorageCloud/firebase')
 // Initialize Cloud Storage and get a reference to the service
 const storage = getStorage(appFB);
 // Setting up multer as a middleware to grab photo uploads
-
+const Product = require('../../model/productTable')
 class ProductCloudController{
     async  uploadImage(req,res,next) {
         try {
@@ -25,14 +25,14 @@ class ProductCloudController{
             // Grab the public url
             const downloadURL = await getDownloadURL(snapshot.ref);
             console.log('File successfully uploaded.');
-            return res.send({
+            let  [affectedRows]  = await Product.update({image:downloadURL}, { where: { id: req.body.id }})
+            return res.status(200).send({
                 message: 'file uploaded to firebase storage',
                 name: req.file.originalname,
                 type: req.file.mimetype,
                 downloadURL: downloadURL
             })
         } catch (error) {
-          
             return res.status(400).send(error.message)
         }
     }
