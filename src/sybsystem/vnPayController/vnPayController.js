@@ -28,7 +28,7 @@ class vnPayController {
       let orderId = dateFormat(date, 'HHmmss')
       let amount = req.body.amount
       let bankCode = req.body.bankCode
-      let orderInfo = req.body.orderDescription
+      let orderInfo = req.body.user_id
       let orderType = req.body.orderType
       let locale = req.body.language
       if (locale === null || locale === '') {
@@ -76,21 +76,21 @@ class vnPayController {
   async vnpay_return(req,res){
     try {
      
-      let vnp_Params = req.query;
+    let vnp_Params = req.query;
     let secureHash = vnp_Params['vnp_SecureHash'];
-    let orderId =  vnp_Params['vnp_OrderInfo']
+    let user_id =  vnp_Params['vnp_OrderInfo']
+    let total_price =  vnp_Params['vnp_Amount']
+    let orderId = vnp_Params['vnp_TxnRef']
     delete vnp_Params['vnp_SecureHash'];
     delete vnp_Params['vnp_SecureHashType'];
     vnp_Params = sortObject(vnp_Params);
     let signData = querystring.stringify(vnp_Params, { encode: false }); 
     let hmac = crypto.createHmac("sha512", secretKey);
     let signed = hmac.update( Buffer.from(signData, 'utf-8')).digest("hex");   
-    console.log(frontEndDirect.vnpayTransactionResult)
     if(secureHash === signed){
         //Kiem tra xem du lieu trong db co hop le hay khong va thong bao ket qua
-        let  [affectedRows]  = await Orders.update({status:'paid - not delivery'},{where:{id:orderId}})
+        let  [affectedRows]  = await Orders.create({id:orderId,total_price,user_id,status:'preparing'})
         // res.json( {code: vnp_Params['vnp_ResponseCode']})
-
         res.redirect(frontEndDirect.vnpayTransactionResult+'?'+'code='+vnp_Params['vnp_ResponseCode'])
     } else{
       res.redirect(frontEndDirect.vnpayTransactionResult+'?'+'code=97')

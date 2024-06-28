@@ -3,6 +3,7 @@ const router = express.Router()
 const ControllerOrder = require('../controllers/order')
 
 
+router.get('/noauth/userOrder/:user_id',ControllerOrder.getOrderByUser)
 router.get('/noauth/cancelRequirement/:id',ControllerOrder.makeCancelRequirement)
 router.get('/noauth/orderUser/:user_id',ControllerOrder.getOrderByUser)
 router.get('/noauth/ordercancel',ControllerOrder.CancelOrder)

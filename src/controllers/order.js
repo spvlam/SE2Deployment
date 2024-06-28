@@ -5,6 +5,7 @@ const Product = require('../model/productTable')
 const { Op } = require('sequelize')
 
 class ControllerOrder {
+  
   async getUserCart (req, res) {
     try {
       let { user_id } = req.params
@@ -148,9 +149,9 @@ class ControllerOrder {
   }
   async getOrderByUser(req,res){
      try {
-      let {user_id} = req.params
-      let orderUser =await Orders.findAll({where:{user_id}})
-      res.status(200).json(orderUser)
+        let {user_id} = req.params
+        let orderUser =await Orders.findAll({where:{  user_id: user_id }})
+        res.status(200).json(orderUser)
      } catch (error) {
       console.log(error)
       res.status(500).json('internal server error')
