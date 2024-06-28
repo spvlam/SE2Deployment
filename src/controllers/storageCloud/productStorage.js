@@ -11,7 +11,6 @@ const Product = require('../../model/productTable')
 class ProductCloudController{
     async  uploadImage(req,res,next) {
         try {
-          
             const dateTime = giveCurrentDateTime();
             const storageRef = ref(storage, `files/${req.file.originalname + "" + dateTime}`);
             // Create file metadata including the content type

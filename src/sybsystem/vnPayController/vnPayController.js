@@ -3,6 +3,7 @@ var querystring = require('qs')
 var crypto = require('crypto')
 let sortObject = require('./utils')
 const { frontEndDirect } = require('../../enum/login')
+const { Orders } = require('../../model/order')
 
 let tmnCode = config.get('vnp_TmnCode')
 let secretKey = config.get('vnp_HashSecret')
@@ -51,6 +52,7 @@ class vnPayController {
       vnp_Params['vnp_IpAddr'] = ipAddr
       vnp_Params['vnp_CreateDate'] = createDate
       vnp_Params['vnp_ExpireDate'] = expireDate
+      // vnp_Params['orderReal'] = req.body.orderIDReal
       if (bankCode !== null && bankCode !== '') {
         vnp_Params['vnp_BankCode'] = bankCode
       }
@@ -63,7 +65,7 @@ class vnPayController {
       var signed = hmac.update( Buffer.from(signData, 'utf-8')).digest('hex')
       vnp_Params['vnp_SecureHash'] = signed
       vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: false })
-      console.log(console)
+     
       res.send(vnpUrl)
     } catch (error) {
         console.log(error)
@@ -73,8 +75,10 @@ class vnPayController {
 // check the consistance of data, do not update the result here
   async vnpay_return(req,res){
     try {
-    let vnp_Params = req.query;
+     
+      let vnp_Params = req.query;
     let secureHash = vnp_Params['vnp_SecureHash'];
+    let orderId =  vnp_Params['vnp_OrderInfo']
     delete vnp_Params['vnp_SecureHash'];
     delete vnp_Params['vnp_SecureHashType'];
     vnp_Params = sortObject(vnp_Params);
@@ -84,13 +88,16 @@ class vnPayController {
     console.log(frontEndDirect.vnpayTransactionResult)
     if(secureHash === signed){
         //Kiem tra xem du lieu trong db co hop le hay khong va thong bao ket qua
+        let  [affectedRows]  = await Orders.update({status:'paid - not delivery'},{where:{id:orderId}})
         // res.json( {code: vnp_Params['vnp_ResponseCode']})
+
         res.redirect(frontEndDirect.vnpayTransactionResult+'?'+'code='+vnp_Params['vnp_ResponseCode'])
     } else{
       res.redirect(frontEndDirect.vnpayTransactionResult+'?'+'code=97')
       res.json( {code: '97'})
     }
     } catch (error) {
+      console.log( req.query)
         res.status(502).json('BAD GATE WAY : CAN NOT CONNECT TO VNPAY')
     }
   }

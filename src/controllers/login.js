@@ -13,7 +13,7 @@ const helper = require('../utils/helper')
 // enum
 
 const Users = require('../model/usersTable')
-const {LoginDevices,frontEndDirect} = require('../enum/login')
+const { LoginDevices, frontEndDirect } = require('../enum/login')
 const hostWebName = process.env.HOST_NAME_WEB
 
 class ControllerLogin {
@@ -148,25 +148,32 @@ class ControllerLogin {
   }
 
   loginWithFacebook (req, res, next) {
-   
     try {
       let user = req.session.passport.user
       let accessToken = jwtHelper.generateToken(user, LoginDevices.accessToken)
-      let refreshToken = jwtHelper.generateToken(user, LoginDevices.refreshToken)
+      let refreshToken = jwtHelper.generateToken(
+        user,
+        LoginDevices.refreshToken
+      )
       Users.update(
         { refresh_token: refreshToken },
         { where: { email: user.email } }
       )
         .then(result => {
-          res.redirect(`${frontEndDirect.loginFacebookSuccess}?accessToken=${accessToken}&refreshToken=${refreshToken}&name=${user.user_name}`);
-        //   res.json({ name: user.user_name, accessToken, refreshToken })
+          console.log(
+            `${frontEndDirect.loginFacebookSuccess}?accessToken=${accessToken}&refreshToken=${refreshToken}&name=${user.user_name}`
+          )
+          res.redirect(
+            `${frontEndDirect.loginFacebookSuccess}?accessToken=${accessToken}&refreshToken=${refreshToken}&name=${user.user_name}`
+          )
+          //   res.json({ name: user.user_name, accessToken, refreshToken })
         })
         .catch(err => {
-            console.log(err)
+          console.log(err)
           res.status(500).json({ message: 'Internal server error2' })
         })
     } catch (err) {
-        console.log(err)
+      console.log(err)
       // mybot.bot.sendMessage(mybot.chatId, `Login facebook error : ${err}`)
       res.status(500).json({ message: 'Internal server error' })
     }
@@ -204,6 +211,23 @@ class ControllerLogin {
       .catch(err => {
         res.status(500).json({ message: err })
       })
+  }
+  async getUser (req, res, next) {
+    try {
+      let userList = await Users.findAll()
+
+      let result = userList.map(userInstance => {
+        let user = userInstance.toJSON() 
+        let { refresh_token, ...rest } = user
+        return {
+          ...rest,
+          status: user.number_device !== 0 ? 'active' : 'inactive'
+        }
+      })
+      res.status(200).json(result)
+    } catch (error) {
+      res.status(500).json(error)
+    }
   }
 }
 

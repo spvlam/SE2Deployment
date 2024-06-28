@@ -3,6 +3,10 @@ const router = express.Router()
 const ControllerLogin = require("../controllers/login")
 const passport = require('../config/facebookLogin')
 
+// user action
+
+router.get('/noauth/getAll',ControllerLogin.getUser)
+
 // facebook authentication
 router.get('/noauth/facebook/callback', passport.authenticate('facebook', {
     successRedirect: '/login/noauth/loginwithFacebook',
